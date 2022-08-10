@@ -44,3 +44,7 @@ Route::get('/activation_account_link/{token}',[LoginController::class,'activatio
 Route::match(['get', 'post'], '/activation_account_change_email/{token}',
  [LoginController::class,'activationAccountChangeEmail'])
  ->name('app_activation_account_change_email');
+
+ Route::match(['get', 'post'], '/forgot_password',
+ [LoginController::class,'forgotPassword'])
+ ->name('app_forgotpassword');

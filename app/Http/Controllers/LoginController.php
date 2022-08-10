@@ -187,5 +187,9 @@ class LoginController extends Controller
        }
         return view('auth.activation_account_change_email',['token'=>$token]);
     }
+    public function forgotPassword(){
+
+        return view('auth.forgot_password');
+    }
 
 }
