@@ -194,8 +194,15 @@ class LoginController extends Controller
         $email=$this->request->input('email-send');
         $user = DB::table('users')
                     ->where('email',$email)->first();
-        if($user){
-            dd($user);
+        if($user)
+        {
+            $full_name = $user->name;
+            //on va générer un token pour la réinitialisation du mot de passe de l'utilisateur
+            $activation_token = md5(uniqid()).$email.sha1($email);
+
+            $emailresetpassword = new EmailService;
+            $subject = "Reset your password";
+            $emailresetpassword->resetPassword($subject,$email,$full_name,true,$activation_token);
         }
         else{
             //back signifie retourne moi en arriere
