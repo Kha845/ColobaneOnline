@@ -48,3 +48,7 @@ Route::match(['get', 'post'], '/activation_account_change_email/{token}',
  Route::match(['get', 'post'], '/forgot_password',
  [LoginController::class,'forgotPassword'])
  ->name('app_forgotpassword');
+//Ce sont les token qui nous permet de récupérer les information de l'utilisateur cest comme un id
+ Route::match(['get', 'post'], '/change_password/{token}',
+ [LoginController::class,'changePassword'])
+ ->name('app_changePassword');

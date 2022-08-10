@@ -38,8 +38,11 @@ class EmailService
         $mail->Body = $this->viewSendEmail($nameUser,$activation_code,$activation_token);
         $mail->send();
     }
-    public function resetPasswort($subject,$emailUser,$nameUser,$isHtml,$activation_token)
+    public function resetPassword($subject,$emailUser,$nameUser,$isHtml,$activation_token)
     {
+
+        $mail = new PHPMailer();
+
         $mail->isSMTP();
         $mail->SMTPDebug = 0;
         $mail->Host = $this->host;

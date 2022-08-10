@@ -17,8 +17,7 @@
                 {{--include les messages d'alerts---}}
                 @include('alerts.alert-message')
                 <label for="email-send" class="form-label">Email</label>
-                <input type="email" name="email-send" id="email-send" class="form-control @error('email-error') is-invalid
-                    @enderror" value="@if(Session::has('old-email')) {{ Session::get('old-email')}} @endif" required placeholder="Please entre your email address">
+                <input type="email" name="email-send" id="email-send" class="form-control @error('email-error') is-invalid @enderror @error('email-success') is-valid @enderror" value="@if(Session::has('old-email')) {{ Session::get('old-email')}} @endif" required placeholder="Please entre your email address">
                  <div class="d-grid gap-2 mt-4 mb-5">
                     <button class="btn btn-primary mt-3" type="submit">Resend password</button>
                 </div>

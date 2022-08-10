@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Services\EmailService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
@@ -192,8 +193,8 @@ class LoginController extends Controller
      if($this->request->isMethod('post'))
      {
         $email=$this->request->input('email-send');
-        $user = DB::table('users')
-                    ->where('email',$email)->first();
+        $user = DB::table('users')->where('email',$email)->first();
+        $message=null;
         if($user)
         {
             $full_name = $user->name;
@@ -203,6 +204,18 @@ class LoginController extends Controller
             $emailresetpassword = new EmailService;
             $subject = "Reset your password";
             $emailresetpassword->resetPassword($subject,$email,$full_name,true,$activation_token);
+
+            DB::table('users')
+                    ->where('email',$email)
+                    ->update(
+                        ['activation_token' => $activation_token]
+                    );
+
+            $message="We have just the request your password, please check your mail-box";
+
+            return back()->withErrors(['email-success'=>$message])
+                        ->with('old-email',$email)
+                        ->with('success',$message);
         }
         else{
             //back signifie retourne moi en arriere
@@ -216,5 +229,55 @@ class LoginController extends Controller
 
         return view('auth.forgot_password');
     }
+    public function changePassword($token)
+    {
+        if($this->request->isMethod('post'))
+        {
+            $new_password = $this->request->input('new-password');
+            $new_password_confirmation = $this->request->input('new-password-confirm');
+            $passwordLength = strlen($new_password);
+            $message = null;
+            if($passwordLength >= 8)
+            {
+                if($new_password == $new_password_confirmation){
+                    $user = DB::table('users')->where('activation_token',$token)->first();
+                    if($user){
 
+                            $id_user = $user->id;
+                            DB::table('users')
+                                ->where('id',$id_user)
+                                ->update(
+                                    [
+                                        'password' => Hash::make($new_password),
+                                        'updated_at' => new \DateTimeImmutable,
+                                        'activation_token'=> ''
+                                    ]
+                                );
+                                    return redirect()->route('login')->with('success','New password changed successfully');
+
+
+                    }else{
+                        return back()->with('danger','This doest not match any users');
+                    }
+
+                }else{
+                    $message="Your password must be identical!";
+                    return back()->withErrors(['confirm-password-errors'=>$message,
+                                                'password-success'=>'success'])
+                                 ->with('danger',$message)
+                                 ->with('old-new-password',$new_password)
+                                 ->with('old-new-password-confirmation',$new_password_confirmation);
+                }
+
+            }else{
+                $message = 'Your password must be least 8 characters!';
+                return back()->withErrors(['password-errors'=> $message])
+                            ->with('danger',$message)
+                            ->with('old-new-password',$new_password);
+            }
+
+        }
+
+        return view('auth.change_password',['token'=>$token]);
+    }
 }
