@@ -2,8 +2,9 @@
 
 namespace App\Providers;
 
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use App\User;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -25,6 +26,26 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        //On définit un portail et ce portail n'est accessible que par l'admin
+        //les gates sont des portail de sécurité
+        Gate::define("admin",function(User $user){
+            return $user->hasRole("admin");
+        });
+
+        Gate::define("employe",function(User $user){
+            return $user->hasRole("employe");
+        });
+
+        Gate::define("manager",function(User $user){
+            return $user->hasRole("manager");
+        });
+
+        Gate::after(function(User $user){
+            return $user->hasRole("superadmin");
+
+        });
+        //On utilise after pour qu'il vérifie d'abords que l'utilisateur est admin ou employe ou manager
+
+
     }
 }

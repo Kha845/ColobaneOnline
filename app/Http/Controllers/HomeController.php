@@ -19,4 +19,13 @@ public function dashboard()
 {
     return view('home.dashboard');
 }
+
+public function listeUtilisateurs()
+{
+    $user = User::paginate(5);
+
+    return view('lirewire.utilisateurs.index',['users'=>$user]);
+
+}
+
 }

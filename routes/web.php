@@ -1,7 +1,11 @@
 <?php
 
+use App\Article;
+use App\TypeArticle;
+use App\Http\Livewire\Utilisateurs;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+//use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
 /*
 |--------------------------------------------------------------------------
@@ -19,16 +23,18 @@ use App\Http\Controllers\LoginController;
  */
 
 
-Route::get('/',[HomeController::class,'home'])->name('app_home');
+Route::get('/home',[HomeController::class,'home'])->name('app_home');
+
+
+Route::match(['get','post'],'/',[LoginController::class,'connexion'])->name('app_login');
 
 
 Route::get('/about',[HomeController::class,'about'])->name('app_about');
 /**
  * La méthode get pour afficher la page et la méthode post pour envoyer les données du formulaire dans la base de donne
  */
-Route::match(['get', 'post'],'/dashboard',
-[HomeController::class,'dashboard'])->middleware('auth')
-                                    ->name('app_dashboard');
+Route::match(['get', 'post'],'/dashboard',[HomeController::class,'dashboard'])->middleware('auth')
+                                                                              ->name('app_dashboard');
 Route::get('/logout',[LoginController::class,'logout'])->name('app_logout');
 
 Route::post('/exist_email',[LoginController::class,'existEmail'])->name('app_exist_email');
@@ -39,10 +45,9 @@ Route::get('/user_checher',[LoginController::class,'userChecker'])->name('app_us
 
 Route::get('/resend_activation_code/{token}',[LoginController::class,'resendActivationCode'])->name('app_resend_activation_code');
 
-Route::get('/activation_account_link/{token}',[LoginController::class,'activationAccountLink'])
-        ->name('app_activation_account_link');
-Route::match(['get', 'post'], '/activation_account_change_email/{token}',
- [LoginController::class,'activationAccountChangeEmail'])
+Route::get('/activation_account_link/{token}',[LoginController::class,'activationAccountLink'])->name('app_activation_account_link');
+
+Route::match(['get', 'post'], '/activation_account_change_email/{token}',[LoginController::class,'activationAccountChangeEmail'])
  ->name('app_activation_account_change_email');
 
  Route::match(['get', 'post'], '/forgot_password',
@@ -52,3 +57,36 @@ Route::match(['get', 'post'], '/activation_account_change_email/{token}',
  Route::match(['get', 'post'], '/change_password/{token}',
  [LoginController::class,'changePassword'])
  ->name('app_changePassword');
+
+ //******* */
+
+Route::get('/types',function(){
+    return Article::with("type")->paginate(5);
+});
+Route::get('/articles',function(){
+    return TypeArticle::with("articles")->paginate(5);
+});
+
+Route::get('/master',function(){
+    return view('layouts.master');})->name('app_master');
+
+//le groupe des routes pour les administrateurs
+Route::group([
+    "middleware"=>["auth","auth.admin"],
+    "as"=>"admin."
+],
+    function(){
+        Route::group([
+            "prefix"=>"habilitations",
+            "as"=>"habilitations."
+        ], function(){
+
+            dd($users);
+            Route::get("/utilisateurs",Utilisateurs::class)->name("app_user");
+
+        });
+    }
+
+);
+
+

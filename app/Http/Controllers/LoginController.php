@@ -17,8 +17,9 @@ class LoginController extends Controller
     {
         $this->request = $request;
     }
-
-
+public function connexion(){
+    return view('auth.login');
+}
 
    public function logout()
    {

@@ -5,8 +5,8 @@
 @section('content')
 <div class="row">
     <div class="col-md-5 mx-auto">
-        <h1 class="text-center text-muted mt-5">Register</h1>
-        <p class="text-center text-muted mb-3">
+        <h1 class="text-center text-grid mt-5">Register</h1>
+        <p class="text-center text-grid mb-3">
             Create an account if you don't have one
         </p>
         <form method="POST" action="{{ route('register') }}" class="row g-3 " id="form-register">
@@ -52,7 +52,7 @@
             <div class="d-grid gap-2">
                 <button class="btn btn-primary" type="button" id="register-user">Register</button>
             </div>
-            <p class="text-center text-muted mt-5 md-3">Already have an account? <a href="{{ route('login') }}"> Login</a></p>
+            <p class="text-center text-grid mt-5 md-3">Already have an account? <a href="{{ route('login') }}"> Login</a></p>
         </form>
     </div>
 </div>

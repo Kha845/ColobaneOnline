@@ -3,7 +3,6 @@
 @section('title', 'Account activation');
 
 @section('content')
-    <h1>Account Activation </h1>
     <div class="container">
         <div class="row">
             <div class="col-md-4 mx-auto">
